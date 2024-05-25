@@ -1,3 +1,10 @@
+version: '3.8'
+
+x-volumes:
+  &config-path ./data
+  &downloads-path ./downloads
+  &watch-path ./watch
+
 services:
   transmission:
     image: lscr.io/linuxserver/transmission:latest
@@ -7,9 +14,9 @@ services:
       - PGID=1000
       - TZ=Etc/UTC
     volumes:
-      - ./data:/config
-      - ./downloads:/downloads
-      - ./watch:/watch
+      - *config-path:/config
+      - *downloads-path:/downloads
+      - *watch-path:/watch
     ports:
       - 9292:9091
       - 51413:51413
@@ -20,8 +27,7 @@ services:
     image: halverneus/static-file-server:latest
     container_name: static-file-server
     volumes:
-      - ./downloads:/web
+      - *downloads-path:/web
     ports:
       - 8080:8080
     restart: unless-stopped
-
